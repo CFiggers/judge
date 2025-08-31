@@ -95,16 +95,18 @@
 (defn as-single-line [pretty-elements open close]
   [[0 (string open (string/join (map (comp 1 0) pretty-elements) " ") close)]])
 
-(defn prettify-list [node]
+(defn prettify-list [pp-parens node]
   (def [open close] (case (type+ node)
-    :ptuple ["[" "]"]
+    :ptuple (if pp-parens
+              ["(" ")"]
+              ["[" "]"])
     # This would be nice, but it requires changing the equality check we do
     # to treat `(quote [1])` the same as `[1]`...
     #:btuple ["'[" "]"]
     :btuple ["[" "]"]
     :array ["@[" "]"]
     (error "non-indexed type")))
-  (def pretty-elements (map prettify node))
+  (def pretty-elements (map (partial prettify pp-parens) node))
   (if (should-be-multiline? pretty-elements open close)
     (surround (mapcat |$ pretty-elements) open close)
     (as-single-line pretty-elements open close)))
@@ -121,12 +123,12 @@
       [[key-indent (string key-text " " first-value-line)]
        ;(indent rest (+ 1 (length key-text)))])))
 
-(defn prettify-pairs [node]
+(defn prettify-pairs [pp-parens node]
   (def [open close] (case (type node)
     :struct ["{" "}"]
     :table ["@{" "}"]
     (error "non-dictionary type")))
-  (def pretty-elements (map prettify (sorted-kvs node)))
+  (def pretty-elements (map (partial prettify pp-parens) (sorted-kvs node)))
   (if (should-be-multiline? pretty-elements open close)
     (-> (util/catseq [[key-lines value-lines] :in (partition 2 pretty-elements)]
       (join-kvs key-lines value-lines))
@@ -147,12 +149,12 @@
       # LDBL_DIG - 1 (for the leading zero) = 17
       (string/format "%.17g" num))))
 
-(varfn prettify [element]
+(varfn prettify [pp-parens element]
   (case (type element)
-    :tuple (prettify-list element)
-    :array (prettify-list element)
-    :table (prettify-pairs element)
-    :struct (prettify-pairs element)
+    :tuple (prettify-list pp-parens element)
+    :array (prettify-list pp-parens element)
+    :table (prettify-pairs pp-parens element)
+    :struct (prettify-pairs pp-parens element)
     :number [[0 (float-to-string-round-trippable element)]]
     [[0 (string/format "%q" element)]]))
 
@@ -162,13 +164,13 @@
     (prin (string/repeat " " indentation))
     (prin text)))
 
-(defn pretty-print [element &opt trailing-indentation]
+(defn pretty-print [element &opt trailing-indentation pp-parens]
   (default trailing-indentation 0)
-  (prin-lines (trailing-indent (prettify element) trailing-indentation))
+  (prin-lines (trailing-indent (prettify pp-parens element) trailing-indentation))
   (print))
 
-(defn to-string-pretty [element &opt indentation]
-  (def lines (prettify element))
+(defn to-string-pretty [element &opt indentation pp-parens]
+  (def lines (prettify pp-parens element))
   (def [lines buf] (if (multiline? lines) [(indent lines indentation) @"\n"] [lines @""]))
   (with-dyns [*out* buf]
     (prin-lines lines))

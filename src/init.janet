@@ -172,6 +172,15 @@
       (string "\n" (string/repeat " " indentation) output))
     output))
 
+(defn- pp-printer [col multiline-expectation form]
+  (def indentation (+ col 1))
+  (def output (fmt/to-string-pretty form indentation true))
+  (if multiline-expectation
+    (if (string/has-prefix? "\n" output)
+      output
+      (string "\n" (string/repeat " " indentation) output))
+    output))
+
 (defn- macro-printer [col _ form]
   (def buf @"\n")
   (with-dyns [*out* buf]
@@ -247,6 +256,9 @@
 
 (defmacro test [<expr> & <expected>]
   (test* <expr> <expected> normal-stabilize normal-printer))
+
+(defmacro test-pp [<expr> & <expected>]
+  (test* <expr> <expected> normal-stabilize pp-printer))
 
 (defn- with-map [src dest]
   (tuple/setmap dest ;(tuple/sourcemap src)))
