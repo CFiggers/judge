@@ -126,14 +126,14 @@ Judge will not run tests for the same file more than once even if a top-level er
   ! <red>(test (+ 2 2))</>
   ! <grn>(test (+ 2 2) 4)</>
   ! error: oh no
-  !   in _thunk [two.janet] (tailcall) on line 3, column 1
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in thunk [two.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
   !   in require-1 [boot.janet] on line LINE, column COL
-  !   in import* [boot.janet] (tailcall) on line LINE, column COL
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in import* [boot.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
-  !   in require-1 [boot.janet] (tailcall) on line LINE, column COL
+  !   in require-1 [boot.janet] (tail call) on line LINE, column COL
   ! 
   ! 0 passed 1 failed
   [2]
@@ -144,19 +144,19 @@ Judge will not run tests for the same file more than once even if a top-level er
   ! <red>(test (+ 2 2))</>
   ! <grn>(test (+ 2 2) 4)</>
   ! error: oh no
-  !   in _thunk [two.janet] (tailcall) on line 3, column 1
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in thunk [two.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
-  !   in require-1 [boot.janet] (tailcall) on line LINE, column COL
+  !   in require-1 [boot.janet] (tail call) on line LINE, column COL
   ! error: oh no
-  !   in _thunk [two.janet] (tailcall) on line 3, column 1
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in thunk [two.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
   !   in require-1 [boot.janet] on line LINE, column COL
-  !   in import* [boot.janet] (tailcall) on line LINE, column COL
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in import* [boot.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
-  !   in require-1 [boot.janet] (tailcall) on line LINE, column COL
+  !   in require-1 [boot.janet] (tail call) on line LINE, column COL
   ! 
   ! 0 passed 1 failed
   [2]
@@ -167,14 +167,14 @@ Judge will not run tests for the same file more than once even if a top-level er
   ! <red>(test (+ 2 2))</>
   ! <grn>(test (+ 2 2) 4)</>
   ! error: oh no
-  !   in _thunk [two.janet] (tailcall) on line 3, column 1
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in thunk [two.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
   !   in require-1 [boot.janet] on line LINE, column COL
-  !   in import* [boot.janet] (tailcall) on line LINE, column COL
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in import* [boot.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
-  !   in require-1 [boot.janet] (tailcall) on line LINE, column COL
+  !   in require-1 [boot.janet] (tail call) on line LINE, column COL
   ! 
   ! 0 passed 1 failed
   [2]
@@ -191,19 +191,19 @@ Judge might still double-evaluate files with no tests in the case of a top-level
 
   $ judge one.janet two.janet
   ! error: oh no
-  !   in _thunk [two.janet] (tailcall) on line 1, column 1
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in thunk [two.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
   !   in require-1 [boot.janet] on line LINE, column COL
-  !   in import* [boot.janet] (tailcall) on line LINE, column COL
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in import* [boot.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
-  !   in require-1 [boot.janet] (tailcall) on line LINE, column COL
+  !   in require-1 [boot.janet] (tail call) on line LINE, column COL
   ! error: oh no
-  !   in _thunk [two.janet] (tailcall) on line 1, column 1
-  !   in dofile [boot.janet] (tailcall) on line LINE, column COL
+  !   in thunk [two.janet] (tail call) on line LINE, column COL
+  !   in dofile [boot.janet] (tail call) on line LINE, column COL
   !   in source-loader [boot.janet] on line LINE, column COL
-  !   in require-1 [boot.janet] (tailcall) on line LINE, column COL
+  !   in require-1 [boot.janet] (tail call) on line LINE, column COL
   ! 
   ! 0 passed
   [2]

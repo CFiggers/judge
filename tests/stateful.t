@@ -49,16 +49,16 @@ Tests don't run if something fails:
   ! 
   ! error: failed to initialize context: oh no
   !   in <anonymous> [script.janet] on line 3, column 17
-  !   in <anonymous> [$PWD/jpm_tree/lib/judge/init.janet] on line 31, column 17
-  !   in <anonymous> [script.janet] on line 5, column 1
+  !   in try [$PWD/jpm_tree/lib/judge/init.janet] on line LINE, column COL
+  !   in try [script.janet] on line LINE, column COL
   ! 
   ! (deftest: erroneous-setup "another test that will be skipped" [_]
   !   (error "unreachable"))
   ! 
   ! error: failed to initialize context: oh no
   !   in <anonymous> [script.janet] on line 3, column 17
-  !   in <anonymous> [$PWD/jpm_tree/lib/judge/init.janet] on line 31, column 17
-  !   in <anonymous> [script.janet] on line 8, column 1
+  !   in try [$PWD/jpm_tree/lib/judge/init.janet] on line LINE, column COL
+  !   in try [script.janet] on line LINE, column COL
   ! 
   ! 0 passed 2 failed
   [1]
@@ -91,16 +91,16 @@ No tests of this type can run after a reset failure:
   ! 
   ! error: failed to initialize context: oh dear
   !   in <anonymous> [script.janet] on line 6, column 5
-  !   in <anonymous> [$PWD/jpm_tree/lib/judge/init.janet] on line 36, column 18
-  !   in <anonymous> [script.janet] on line 8, column 1
+  !   in try [$PWD/jpm_tree/lib/judge/init.janet] on line LINE, column COL
+  !   in try [script.janet] on line LINE, column COL
   ! 
   ! (deftest: erroneous-reset "test not attempted" [_]
   !   (error "unreachable"))
   ! 
   ! error: failed to initialize context: oh dear
   !   in <anonymous> [script.janet] on line 6, column 5
-  !   in <anonymous> [$PWD/jpm_tree/lib/judge/init.janet] on line 36, column 18
-  !   in <anonymous> [script.janet] on line 11, column 1
+  !   in try [$PWD/jpm_tree/lib/judge/init.janet] on line LINE, column COL
+  !   in try [script.janet] on line LINE, column COL
   ! 
   ! 0 passed 2 failed
   [1]
@@ -123,7 +123,7 @@ Teardown failures are reported:
   ! <dim># script.janet</>
   ! <red>failed to teardown erroneous-teardown test context</>
   ! error: oh no
-  !   in <anonymous> [script.janet] (tailcall) on line 6, column 21
+  !   in <anonymous> [script.janet] (tail call) on line 6, column 21
   ! 
   ! 1 passed
   [1]

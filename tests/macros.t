@@ -76,9 +76,9 @@ Macros that raise are gracefully handled:
   ! <dim># script.janet</>
   ! 
   ! <red># error: oh no
-  ! #   in oh-no [script.janet] (tailcall) on line LINE, column COL
+  ! #   in oh-no [script.janet] (tail call) on line LINE, column COL
   ! #   in macex1 [boot.janet] on line LINE, column COL
-  ! #   in <anonymous> [script.janet] on line 3, column 1</>
+  ! #   in try [script.janet] on line LINE, column COL</>
   ! <red>(test-macro (oh-no))</>
   ! 
   ! 0 passed 1 failed

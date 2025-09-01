@@ -133,7 +133,7 @@ Tests fails due to error (this should probably also patch!):
   !   <red>(test (+ 1 2) 0)</>)
   ! 
   ! error: oh no
-  !   in <anonymous> [script.janet] on line 4, column 3
+  !   in try [script.janet] on line LINE, column COL
   ! 
   ! 0 passed 1 failed
   [1]
@@ -150,7 +150,7 @@ Exception in test expression:
   ! 
   ! (deftest "hello"
   !   <red># error: oh no
-  ! #   in <anonymous> [script.janet] on line 3, column 9</>
+  ! #   in try [script.janet] on line LINE, column COL</>
   !   <red>(test (error "oh no") 0)</>)
   ! 
   ! 0 passed 1 failed
@@ -169,7 +169,7 @@ Control continues after an exception in a test expression:
   ! 
   ! (deftest "hello"
   !   <red># error: oh no
-  ! #   in <anonymous> [script.janet] on line 3, column 9</>
+  ! #   in try [script.janet] on line LINE, column COL</>
   !   <red>(test (error "oh no") 0)</>
   !   <red>(test (+ 1 2))</>
   !   <grn>(test (+ 1 2) 3)</>)
@@ -337,7 +337,7 @@ test-error:
   ! 
   ! (deftest "okay"
   !   <red># error: did not error
-  ! #   in <anonymous> [script.janet] on line 3, column 1</>
+  ! #   in try [script.janet] on line LINE, column COL</>
   !   <red>(test-error (+ 1 2) 0)</>)
   ! 
   ! 0 passed 2 failed

@@ -161,7 +161,7 @@ Uncaught exceptions cause tests to fail:
   !   (error "oh no"))
   ! 
   ! error: oh no
-  !   in <anonymous> [script.janet] on line 3, column 3
+  !   in try [script.janet] on line LINE, column COL
   ! 
   ! 0 passed 1 failed
   [1]
@@ -248,7 +248,7 @@ test-error fails if nothing raises:
   ! 
   ! (deftest "errors"
   !   <red># error: did not error
-  ! #   in <anonymous> [script.janet] on line 2, column 1</>
+  ! #   in try [script.janet] on line LINE, column COL</>
   !   <red>(test-error 123)</>)
   ! 
   ! 0 passed 1 failed
