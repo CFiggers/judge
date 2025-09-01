@@ -86,6 +86,30 @@
         :reset ,reset
         :teardown ,teardown})))
 
+(defmacro- witness [seen value & body]
+  (with-syms [$seen $value $result]
+    ~(let [,$seen ,seen ,$value ,value]
+      (if (,in ,$seen ,$value)
+        '<cycle>
+        (do
+          (put ,$seen ,$value true)
+          (def ,$result (do ,;body))
+          (put ,$seen ,$value nil)
+          ,$result)))))
+
+(defn- pp-cloner-aux [seen x]
+  (def pp-cloner (partial pp-cloner-aux seen))
+  (match (type x)
+    :buffer (buffer/slice x)
+    :abstract (try (unmarshal (marshal x)) ([&] x))
+    :table (witness seen x (walk pp-cloner x))
+    :struct (walk pp-cloner x)
+    :array (witness seen x (walk pp-cloner x))
+    :tuple (walk pp-cloner x)
+    :number (if (nan? x) 'math/nan x)
+    x))
+(defn- pp-cloner [x] (pp-cloner-aux @{} x))
+
 # This transformation ensures that the tuple keys of structs
 # and tables are always square-bracketed.
 #
@@ -111,37 +135,25 @@
   (chill (tabseq [[k v] :pairs dict]
     (if (tuple? k) (tuple/brackets ;k) k) v)))
 
-# this doesn't just clone the value, but
-# clones it in such a way that its representation
-# round-trips. so we remove any nans, and change
-# round brackets to square brackets when they appear
-# as dictionary keys.
-(defmacro- witness [seen value & body]
-  (with-syms [$seen $value $result]
-    ~(let [,$seen ,seen ,$value ,value]
-      (if (,in ,$seen ,$value)
-        '<cycle>
-        (do
-          (put ,$seen ,$value true)
-          (def ,$result (do ,;body))
-          (put ,$seen ,$value nil)
-          ,$result)))))
-
-(defn- stably-clone-aux [seen x]
-  (def stably-clone (partial stably-clone-aux seen))
+(defn- normal-cloner-aux [seen x]
+  (def normal-cloner (partial normal-cloner-aux seen))
   (match (type x)
     :buffer (buffer/slice x)
     :abstract (try (unmarshal (marshal x)) ([&] x))
-    :table (witness seen x (square-keys (walk stably-clone x)))
-    :struct (square-keys (walk stably-clone x))
-    :array (witness seen x (walk stably-clone x))
-    :tuple (walk stably-clone x)
+    :table (witness seen x (square-keys (walk normal-cloner x)))
+    :struct (square-keys (walk normal-cloner x))
+    :array (witness seen x (walk normal-cloner x))
+    :tuple (tuple/brackets ;(walk normal-cloner x))
     :number (if (nan? x) 'math/nan x)
     x))
+# this doesn't just clone the value, but
+# clones it in such a way that its representation
+# round-trips with (test). so we remove any nans, and change
+# round brackets to square brackets when they appear
+# as dictionary keys.
+(defn- normal-cloner [x] (normal-cloner-aux @{} x))
 
-(defn- stably-clone [x] (stably-clone-aux @{} x))
-
-(defn- actual-expectation [test expr expected stabilizer printer]
+(defn- actual-expectation [test expr expected stabilizer printer cloner]
   (def expectation
     @{:expected expected
       :form (dyn *macro-form*)
@@ -152,13 +164,13 @@
   (with-syms [$expr]
     ~(try
       (let [,$expr ,expr]
-        (,array/push (',expectation :actual) (,stably-clone ,$expr))
+        (,array/push (',expectation :actual) (,cloner ,$expr))
         ,$expr)
       ([e fib] (,put ',expectation :error [e fib]) nil))))
 
-(defn- test* [<expr> <expected> stabilizer printer]
+(defn- test* [<expr> <expected> stabilizer printer cloner]
   (if-let [test (dyn *current-test*)]
-    (actual-expectation test <expr> <expected> stabilizer printer)
+    (actual-expectation test <expr> <expected> stabilizer printer cloner)
     (declare-test nil nil nil [(dyn *macro-form*)])))
 
 (defn- normal-stabilize [node] [(util/stabilize node)])
@@ -241,10 +253,10 @@
       [normalized])))
 
 (defmacro test-error [<expr> & <expected>]
-  (test* (util/get-error <expr>) <expected> normal-stabilize normal-printer))
+  (test* (util/get-error <expr>) <expected> normal-stabilize normal-printer pp-cloner))
 
 (defmacro test-macro [<expr> & <expected>]
-  (test* ~(,macex1 ',<expr>) <expected> normal-stabilize macro-printer))
+  (test* ~(,macex1 ',<expr>) <expected> normal-stabilize macro-printer pp-cloner))
 
 (defmacro test-stdout [<expr> & <expected>]
   (def [line col] (tuple/sourcemap (dyn *macro-form*)))
@@ -252,13 +264,13 @@
     ~(let [,$buf @""]
       (with-dyns [',*out* ,$buf]
         [,$buf ,<expr>]))))
-  (test* <expr> <expected> (stdout-stabilize col) stdout-printer))
+  (test* <expr> <expected> (stdout-stabilize col) stdout-printer pp-cloner))
 
 (defmacro test [<expr> & <expected>]
-  (test* <expr> <expected> normal-stabilize normal-printer))
+  (test* <expr> <expected> normal-stabilize normal-printer normal-cloner))
 
 (defmacro test-pp [<expr> & <expected>]
-  (test* <expr> <expected> normal-stabilize pp-printer))
+  (test* <expr> <expected> normal-stabilize pp-printer pp-cloner))
 
 (defn- with-map [src dest]
   (tuple/setmap dest ;(tuple/sourcemap src)))
@@ -279,5 +291,5 @@
       (ctx :trusting)
       false))
   (match [trusting <expected>]
-    [true [<trusted>]] (test* ['quote <trusted>] <expected> normal-stabilize normal-printer)
-    _ (test* <expr> <expected> normal-stabilize normal-printer)))
+    [true [<trusted>]] (test* ['quote <trusted>] <expected> normal-stabilize normal-printer normal-cloner)
+    _ (test* <expr> <expected> normal-stabilize normal-printer normal-cloner)))

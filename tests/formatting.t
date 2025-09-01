@@ -97,36 +97,6 @@ Distinguishes mutable and immutable types:
   ! 0 passed 4 failed
   [1]
 
-Tuples render with brackets:
-
-  $ use <<EOF
-  > (use judge)
-  > (test [1 2 3])
-  > EOF
-  $ judge
-  ! <dim># script.janet</>
-  ! 
-  ! <red>(test [1 2 3])</>
-  ! <grn>(test [1 2 3] [1 2 3])</>
-  ! 
-  ! 0 passed 1 failed
-  [1]
-
-Nested tuples still render with brackets:
-
-  $ use <<EOF
-  > (use judge)
-  > (test [1 [2] 3])
-  > EOF
-  $ judge
-  ! <dim># script.janet</>
-  ! 
-  ! <red>(test [1 [2] 3])</>
-  ! <grn>(test [1 [2] 3] [1 [2] 3])</>
-  ! 
-  ! 0 passed 1 failed
-  [1]
-
 Arrays and other @-prefixed forms don't correct incorrectly:
 
   $ use <<EOF
@@ -157,25 +127,6 @@ Arrays and other @-prefixed forms don't correct incorrectly:
   ! 
   ! 0 passed 5 failed
   [1]
-
-Does not distinguish bracketed tuples:
-
-  $ use <<EOF
-  > (use judge)
-  > (test [1 '[2] 3])
-  > EOF
-  $ judge -a
-  ! <dim># script.janet</>
-  ! 
-  ! <red>(test [1 '[2] 3])</>
-  ! <grn>(test [1 '[2] 3] [1 [2] 3])</>
-  ! 
-  ! 0 passed 1 failed
-  [1]
-  $ judge
-  ! <dim># script.janet</>
-  ! 
-  ! 1 passed
 
 Long output starts on its own line:
 

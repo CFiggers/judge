@@ -38,7 +38,7 @@ results)
     (empty? actual) ["did not reach expectation" nil]
     (not (util/deep-same? actual)) ["inconsistent results" nil]
     (let [stabilized (stabilizer (first actual))]
-      (unless (deep= stabilized expected)
+      (unless (util/deep= stabilized expected)
         (def pos (tuple/sourcemap form))
         (def [byte-index form-src] (get-full-form))
         (def multiline? (not= nil (string/find "\n" form-src)))

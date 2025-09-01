@@ -12,14 +12,6 @@
       (when (nil? (in ,$t ,$k))
         (put ,$t ,$k ,v)))))
 
-(defn deep-same? [list]
-  (case (length list)
-    0 true
-    1 true
-    (do
-      (def proto (in list 0))
-      (all |(deep= proto $) list))))
-
 (defn get-error [<expr>]
   (with-syms [$errored $err]
     ~(let [[,$err ,$errored]
@@ -126,3 +118,45 @@
           (set ,$result (,$f))
           (set ,$forced? true))
         ,$result))))
+
+# the native deep= doesn't check tuple shape.
+# this function is entirely copy-pasted from the
+# stdlib
+(defn- deep-not= [x y]
+  (def tx (type x))
+  (or
+    (not= tx (type y))
+    # this is the only difference from the stdlib:
+    (and (= tx :tuple) (not= (tuple/type x) (tuple/type y)))
+    (cond
+      (or (= tx :tuple) (= tx :array))
+      (or (not= (length x) (length y))
+          (do
+            (var ret false)
+            (forv i 0 (length x)
+              (def xx (in x i))
+              (def yy (in y i))
+              (if (deep-not= xx yy)
+                (break (set ret true))))
+            ret))
+      (or (= tx :struct) (= tx :table))
+      (or (not= (length x) (length y))
+          (do
+            (def rawget (if (= tx :struct) struct/rawget table/rawget))
+            (var ret false)
+            (eachp [k v] x
+              (if (deep-not= (rawget y k) v) (break (set ret true))))
+            ret))
+      (= tx :buffer) (not= 0 (- (length x) (length y)) (memcmp x y))
+      (not= x y))))
+
+(defn deep= [x y]
+  (not (deep-not= x y)))
+
+(defn deep-same? [list]
+  (case (length list)
+    0 true
+    1 true
+    (do
+      (def proto (in list 0))
+      (all |(deep= proto $) list))))

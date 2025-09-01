@@ -19,6 +19,7 @@ Exported symbols:
   test
   test-error
   test-macro
+  test-pp
   test-stdout
   trust
 

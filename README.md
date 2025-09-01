@@ -7,7 +7,7 @@ Judge is a library for writing inline snapshot tests in [Janet](https://github.c
 (declare-project
   :dependencies [
     {:url "https://github.com/ianthehenry/judge.git"
-     :tag "v2.9.0"}
+     :tag "v2.10.0"}
   ])
 ```
 
@@ -161,6 +161,42 @@ If the expression to test does not evaluate to `nil`, it will be included in the
 ```
 
 Due to ambiguity in the Janet parser for multi-line strings, a trailing newline will always be added to the output if it does not exist.
+
+## `test-pp`
+
+The normal `(test)` does some debatable rewriting to make expressions reflect their input a little more cleanly. In particular, if you write a tuple:
+
+```janet
+(test [1 2 3])
+```
+
+It will correct like this:
+
+```janet
+(test [1 2 3] [1 2 3])
+```
+
+Even though the canonical way to print out such a tuple in Janet would look like this:
+
+```janet
+(test [1 2 3] (1 2 3))
+```
+
+This representation is also ambiguous, because the output renders bracketed and parenthesized tuples identically:
+
+```janet
+(test '[1 2 3] [1 2 3])
+(test '(1 2 3) [1 2 3])
+```
+
+To avoid this ambiguity, the `test-pp` macro uses the same representation that Janet uses when you call `(pp)`: paren tuples are printed with parens, and only bracketed tuples are printed with square brackets:
+
+```janet
+(test-pp '(1 2 3) (1 2 3))
+(test-pp '[1 2 3] [1 2 3])
+```
+
+Apart from this different handling of tuple shapes, `test-pp` is the same as `test`.
 
 ## `trust`
 
@@ -349,6 +385,12 @@ It's important that reset *actually* resets the test state, so that it doesn't m
 Judge itself is tested using [cram](https://bitheap.org/cram/), so you'll need a working Python distribution.
 
 # Changelog
+
+## v2.10.0 2025-09-01
+
+- added the `(test-pp)` helper, which does not do the square-bracket conversion that `(test)` does
+- fixed `test-macro` to stop treating square-bracketed tuples ambiguously
+- judge now requires Janet 1.38.0 or later
 
 ## v2.9.0 2024-07-19
 
