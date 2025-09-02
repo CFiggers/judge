@@ -22,37 +22,37 @@ Pretty-printer:
   > EOF
 
   $ run script.janet
-  [1 2 3]
-  [1 [2 3] 4]
-  [1 [2 3] [[4 5] 6 7] [8 9] [[10 11 12]]]
-  [1
-   [2 3]
-   [[4 5] 6 7]
-   [8 9]
-   [[10 11 12] 13]]
-  ["long strings that will actually"
-   "need to wrap to multiple lines"]
-  [1
+  (1 2 3)
+  (1 (2 3) 4)
+  (1 (2 3) ((4 5) 6 7) (8 9) ((10 11 12)))
+  (1
+   (2 3)
+   ((4 5) 6 7)
+   (8 9)
+   ((10 11 12) 13))
+  ("long strings that will actually"
+   "need to wrap to multiple lines")
+  (1
    2
-   ["long strings that will actually"
-    "need to wrap to multiple lines"]
+   ("long strings that will actually"
+    "need to wrap to multiple lines")
    3
-   4]
-  [1
+   4)
+  (1
    2
    @["long strings that will actually"
      "need to wrap to multiple lines"]
    3
-   4]
-  []
-  [1 [2] 3]
+   4)
+  ()
+  (1 [2] 3)
   {:a 1}
-  {:a ["long strings that will actually"
-       "need to wrap to multiple lines"]}
-  {["long strings that will actually"
-    "need to wrap to multiple lines"]
+  {:a ("long strings that will actually"
+       "need to wrap to multiple lines")}
+  {("long strings that will actually"
+    "need to wrap to multiple lines")
      123}
-  {[1 2] :a [3 4] :b}
+  {(1 2) :a (3 4) :b}
   @{:a 1
     :b 2
     :c 3

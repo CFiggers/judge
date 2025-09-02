@@ -186,7 +186,7 @@
 
 (defn- pp-printer [col multiline-expectation form]
   (def indentation (+ col 1))
-  (def output (fmt/to-string-pretty form indentation true))
+  (def output (fmt/to-string-pretty form indentation))
   (if multiline-expectation
     (if (string/has-prefix? "\n" output)
       output
