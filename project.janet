@@ -3,12 +3,7 @@
   :author "Ian Henry <ianthehenry@gmail.com>"
   :description "Self-modifying test framework"
   :license "MIT"
-  :url "https://github.com/ianthehenry/judge"
-  :repo "git+https://github.com/ianthehenry/judge"
-  :dependencies [
-    {:url "https://github.com/ianthehenry/cmd"
-     :tag "v1.1.0"}
-  ])
+  :dependencies ["https://github.com/cfiggers/cmd"])
 
 (declare-source
   :prefix "judge"
